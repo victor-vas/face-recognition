@@ -9,3 +9,4 @@
 -  [tachyons](https://tachyons.io/)
 -  [react-tilt](https://www.npmjs.com/package/react-tilt)
 -  [react-particles-js](https://www.npmjs.com/package/react-particles-js)
+-  [clarifai](https://www.npmjs.com/package/clarifai)
