@@ -1,11 +1,40 @@
 import React from 'react';
 import './styles.css';
 
-const Navigation = () => {
+interface NavigationProps {
+  route: string;
+  setRoute: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Navigation = ({ route, setRoute }: NavigationProps) => {
   return (
-    <nav>
-      <p className="f3 link dim white underline pa3 pointer">Sign Out</p>
-    </nav>
+    <>
+      {route === 'home' ? (
+        <nav>
+          <p
+            className="f3 link dim white underline pa3 pointer"
+            onClick={() => setRoute('signin')}
+          >
+            Sign Out
+          </p>
+        </nav>
+      ) : (
+        <nav>
+          <p
+            className="f3 link dim white underline pa3 pointer"
+            onClick={() => setRoute('signin')}
+          >
+            Sign In
+          </p>
+          <p
+            className="f3 link dim white underline pa3 pointer"
+            onClick={() => setRoute('register')}
+          >
+            Register
+          </p>
+        </nav>
+      )}
+    </>
   );
 };
 

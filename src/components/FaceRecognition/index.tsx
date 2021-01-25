@@ -4,7 +4,7 @@ import './styles.css';
 
 interface FaceRecognitionProps {
   imageUrl: string;
-  box: IBox;
+  box: IBox | null | undefined;
 }
 
 const FaceRecognition = ({ imageUrl, box }: FaceRecognitionProps) => {
@@ -22,10 +22,10 @@ const FaceRecognition = ({ imageUrl, box }: FaceRecognitionProps) => {
             <div
               className="bounding-box"
               style={{
-                top: box.topRow,
-                right: box.rightCol,
-                bottom: box.bottomRow,
-                left: box.leftCol,
+                top: box?.topRow,
+                right: box?.rightCol,
+                bottom: box?.bottomRow,
+                left: box?.leftCol,
               }}
             ></div>
           </div>

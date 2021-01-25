@@ -8,6 +8,8 @@ import Logo from '../../components/Logo';
 import ImageLinkForm from '../../components/ImageLinkForm';
 import Rank from '../../components/Rank';
 import FaceRecognition from '../../components/FaceRecognition';
+import SignIn from '../SignIn';
+import Register from '../Register';
 
 import './styles.css';
 
@@ -25,12 +27,8 @@ const app = new Clarifai.App({
 const App = () => {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [box, setBox] = useState<IBox>({
-    topRow: 0,
-    bottomRow: 0,
-    leftCol: 0,
-    rightCol: 0,
-  });
+  const [box, setBox] = useState<IBox | null>();
+  const [route, setRoute] = useState('signin');
 
   const calculateFaceLocation = (data: any) => {
     const clarifaiFace =
@@ -72,15 +70,21 @@ const App = () => {
           },
         }}
       />
-      <Navigation />
-      <Logo />
-      <Rank />
-      <ImageLinkForm
-        setInput={setInput}
-        input={input}
-        handleSubmit={handleSubmit}
-      />
-      <FaceRecognition imageUrl={imageUrl} box={box} />
+      <Navigation route={route} setRoute={setRoute} />
+      {route === 'signin' && <SignIn setRoute={setRoute} />}
+      {route === 'register' && <Register setRoute={setRoute} />}
+      {route === 'home' && (
+        <>
+          <Logo />
+          <Rank />
+          <ImageLinkForm
+            setInput={setInput}
+            input={input}
+            handleSubmit={handleSubmit}
+          />
+          <FaceRecognition imageUrl={imageUrl} box={box} />
+        </>
+      )}
     </main>
   );
 };
