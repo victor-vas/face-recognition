@@ -20,6 +20,22 @@ export interface IBox {
   rightCol: number;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  entries: number;
+  joined: string;
+}
+
+const initialUser = {
+  id: '',
+  name: '',
+  email: '',
+  entries: 0,
+  joined: '',
+};
+
 const app = new Clarifai.App({
   apiKey: process.env.REACT_APP_CLARIFAI_API_kEY,
 });
@@ -29,6 +45,7 @@ const App = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [box, setBox] = useState<IBox | null>();
   const [route, setRoute] = useState('signin');
+  const [user, setUser] = useState<User>(initialUser);
 
   const calculateFaceLocation = (data: any) => {
     const clarifaiFace =
@@ -72,7 +89,9 @@ const App = () => {
       />
       <Navigation route={route} setRoute={setRoute} />
       {route === 'signin' && <SignIn setRoute={setRoute} />}
-      {route === 'register' && <Register setRoute={setRoute} />}
+      {route === 'register' && (
+        <Register setRoute={setRoute} setUser={setUser} />
+      )}
       {route === 'home' && (
         <>
           <Logo />
@@ -85,6 +104,7 @@ const App = () => {
           <FaceRecognition imageUrl={imageUrl} box={box} />
         </>
       )}
+      {console.log(user)}
     </main>
   );
 };
