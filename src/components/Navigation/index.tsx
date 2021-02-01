@@ -1,36 +1,59 @@
 import React from 'react';
+import { IUser } from '../../containers/App';
 import './styles.css';
 
 interface NavigationProps {
-  route: string;
   setRoute: React.Dispatch<React.SetStateAction<string>>;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
+  user: IUser | null;
 }
 
-const Navigation = ({ route, setRoute }: NavigationProps) => {
+const Navigation = ({
+  setRoute,
+  setUser,
+  setImageUrl,
+  setInput,
+  user,
+}: NavigationProps) => {
   return (
     <>
-      {route === 'home' ? (
+      {!user?.id ? (
         <nav>
           <p
             className="f3 link dim white underline pa3 pointer"
-            onClick={() => setRoute('signin')}
+            onClick={() => {
+              setRoute('signin');
+              localStorage.setItem('route', 'signin');
+            }}
           >
-            Sign Out
+            Entrar
+          </p>
+          <p
+            className="f3 link dim white underline pa3 pointer"
+            onClick={() => {
+              setRoute('signup');
+              localStorage.setItem('route', 'signup');
+            }}
+          >
+            Registrar
           </p>
         </nav>
       ) : (
         <nav>
           <p
             className="f3 link dim white underline pa3 pointer"
-            onClick={() => setRoute('signin')}
+            onClick={() => {
+              localStorage.clear();
+              setUser(null);
+              setImageUrl('');
+              setInput('');
+              setRoute('signin');
+              localStorage.setItem('route', 'signin');
+            }}
           >
-            Sign In
-          </p>
-          <p
-            className="f3 link dim white underline pa3 pointer"
-            onClick={() => setRoute('register')}
-          >
-            Register
+            Sair
           </p>
         </nav>
       )}

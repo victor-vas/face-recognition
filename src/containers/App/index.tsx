@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 
 import Navigation from '../../components/Navigation';
 import Logo from '../../components/Logo';
@@ -9,9 +8,10 @@ import ImageLinkForm from '../../components/ImageLinkForm';
 import Rank from '../../components/Rank';
 import FaceRecognition from '../../components/FaceRecognition';
 import SignIn from '../SignIn';
-import Register from '../Register';
+import SignUp from '../SignUp';
 
 import './styles.css';
+import api from '../../configs/api';
 
 export interface IBox {
   topRow: number;
@@ -20,7 +20,7 @@ export interface IBox {
   rightCol: number;
 }
 
-export interface User {
+export interface IUser {
   id: string;
   name: string;
   email: string;
@@ -28,24 +28,14 @@ export interface User {
   joined: string;
 }
 
-const initialUser = {
-  id: '',
-  name: '',
-  email: '',
-  entries: 0,
-  joined: '',
-};
-
-const app = new Clarifai.App({
-  apiKey: process.env.REACT_APP_CLARIFAI_API_kEY,
-});
-
 const App = () => {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [box, setBox] = useState<IBox | null>();
-  const [route, setRoute] = useState('signin');
-  const [user, setUser] = useState<User>(initialUser);
+  const [route, setRoute] = useState(localStorage.getItem('route') as string);
+  const [user, setUser] = useState<IUser | null>(
+    JSON.parse(localStorage.getItem('user') as string),
+  );
 
   const calculateFaceLocation = (data: any) => {
     const clarifaiFace =
@@ -65,10 +55,34 @@ const App = () => {
   const handleSubmit = () => {
     setImageUrl(input);
 
-    app.models
-      .predict('d02b4508df58432fbb84e800597b8959', input)
-      .then((response: any) => setBox(calculateFaceLocation(response)))
-      .catch((error: any) => console.error(error));
+    if (!user) return;
+
+    fetch(`${api}/imageurl`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response: any) => {
+        if (response) {
+          fetch(`${api}/image`, {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: user.id,
+            }),
+          })
+            .then((response) => response.json())
+            .then((count) => setUser({ ...user, entries: count }));
+        }
+        setBox(calculateFaceLocation(response));
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((error: any) =>
+        console.log('A API não está funcionando no momento.'),
+      );
   };
 
   return (
@@ -78,24 +92,32 @@ const App = () => {
         params={{
           particles: {
             number: {
-              value: 50,
+              value: 70,
               density: {
                 enable: true,
-                value_area: 800,
+                value_area: 500,
               },
             },
           },
         }}
       />
-      <Navigation route={route} setRoute={setRoute} />
-      {route === 'signin' && <SignIn setRoute={setRoute} />}
-      {route === 'register' && (
-        <Register setRoute={setRoute} setUser={setUser} />
+      <Navigation
+        user={user}
+        setRoute={setRoute}
+        setUser={setUser}
+        setImageUrl={setImageUrl}
+        setInput={setInput}
+      />
+      {route === 'signin' && !user?.id && (
+        <SignIn setRoute={setRoute} setUser={setUser} />
       )}
-      {route === 'home' && (
+      {route === 'signup' && !user?.id && (
+        <SignUp setRoute={setRoute} setUser={setUser} />
+      )}
+      {route === 'home' && user?.id && (
         <>
           <Logo />
-          <Rank />
+          <Rank user={user} />
           <ImageLinkForm
             setInput={setInput}
             input={input}
@@ -104,7 +126,6 @@ const App = () => {
           <FaceRecognition imageUrl={imageUrl} box={box} />
         </>
       )}
-      {console.log(user)}
     </main>
   );
 };

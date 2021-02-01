@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { User } from '../App';
+import api from '../../configs/api';
+import { IUser } from '../App';
 
-interface RegisterProps {
+interface SignUpProps {
   setRoute: React.Dispatch<React.SetStateAction<string>>;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
 }
 
-const Register = ({ setRoute, setUser }: RegisterProps) => {
+const SignUp = ({ setRoute, setUser }: SignUpProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,35 +17,40 @@ const Register = ({ setRoute, setUser }: RegisterProps) => {
       <main className="pa4 black-80">
         <form
           className="measure"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
 
-            fetch('http://localhost:3333/signup', {
-              method: 'post',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                name,
-                email,
-                password,
-              }),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data) {
-                  setUser(data);
-                  setRoute('home');
-                }
+            try {
+              const response = await fetch(`${api}/signup`, {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  name,
+                  email,
+                  password,
+                }),
               });
+              const user = await response.json();
+
+              if (user) {
+                setUser(user);
+                localStorage.setItem('user', JSON.stringify(user));
+                setRoute('home');
+                localStorage.setItem('route', 'home');
+              }
+            } catch (error) {
+              console.log('Erro no Registro.');
+            }
           }}
         >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-            <legend className="f1 fw6 ph0 mh0 white">Register</legend>
+            <legend className="f1 fw6 ph0 mh0 white">Registrar</legend>
             <div className="mt3">
               <label className="db fw6 lh-copy f6 white" htmlFor="name">
-                Name
+                Nome
               </label>
               <input
-                className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="pa2 input-reset ba bg-white hover-bg-black hover-white w-100"
                 type="text"
                 name="name"
                 id="name"
@@ -60,7 +66,7 @@ const Register = ({ setRoute, setUser }: RegisterProps) => {
                 Email
               </label>
               <input
-                className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="pa2 input-reset ba bg-white hover-bg-black hover-white w-100"
                 type="email"
                 name="email-address"
                 id="email-address"
@@ -73,7 +79,7 @@ const Register = ({ setRoute, setUser }: RegisterProps) => {
                 Password
               </label>
               <input
-                className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="b pa2 input-reset ba bg-white hover-bg-black hover-white w-100"
                 type="password"
                 name="password"
                 id="password"
@@ -86,7 +92,7 @@ const Register = ({ setRoute, setUser }: RegisterProps) => {
             <input
               className="b ph3 pv2 input-reset ba b--white bg-transparent grow pointer f6 dib white"
               type="submit"
-              value="Register"
+              value="Registrar"
             />
           </div>
         </form>
@@ -95,4 +101,4 @@ const Register = ({ setRoute, setUser }: RegisterProps) => {
   );
 };
 
-export default Register;
+export default SignUp;

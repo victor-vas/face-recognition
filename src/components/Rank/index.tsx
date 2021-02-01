@@ -1,10 +1,15 @@
 import React from 'react';
+import { IUser } from '../../containers/App';
 
-const Rank = () => {
+interface RankProps {
+  user: IUser | null;
+}
+
+const Rank = ({ user }: RankProps) => {
   return (
     <div>
-      <div className="white f3">Victor seu rank atual é...</div>
-      <div className="white f1">#1</div>
+      <div className="white f3">{`${user?.name}, você já verificou...`}</div>
+      <div className="white f1">{`${user?.entries}`}</div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ const ImageLinkForm = ({
   return (
     <div>
       <p className="f3 white">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+        Adicione a foto de uma pessoa para o reconhecimento facial.
       </p>
       <div className="center">
         <div className="form center pa4 br3 shadow-5">
