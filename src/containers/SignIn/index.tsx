@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ErrorHandling from '../../components/ErrorHandling';
 import api from '../../configs/api';
 import { IUser } from '../App';
 
@@ -10,6 +11,7 @@ interface SignInProps {
 const SignIn = ({ setRoute, setUser }: SignInProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   return (
     <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -31,14 +33,16 @@ const SignIn = ({ setRoute, setUser }: SignInProps) => {
 
               const user = await response.json();
 
-              if (user) {
+              if (user?.id) {
                 setUser(user);
                 localStorage.setItem('user', JSON.stringify(user));
                 setRoute('home');
                 localStorage.setItem('route', 'home');
+              } else {
+                setError('Email ou password errado.');
               }
             } catch (error) {
-              console.log('Erro no cadastro');
+              setError('Email ou password errado.');
             }
           }}
         >
@@ -80,6 +84,7 @@ const SignIn = ({ setRoute, setUser }: SignInProps) => {
               type="submit"
               value="Entrar"
             />
+            <ErrorHandling error={error} setError={setError} />
           </div>
           <div
             className="lh-copy mt3"

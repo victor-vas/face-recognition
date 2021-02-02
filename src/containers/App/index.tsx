@@ -32,7 +32,9 @@ const App = () => {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [box, setBox] = useState<IBox | null>();
-  const [route, setRoute] = useState(localStorage.getItem('route') as string);
+  const [route, setRoute] = useState(
+    (localStorage.getItem('route') as string) || 'signin',
+  );
   const [user, setUser] = useState<IUser | null>(
     JSON.parse(localStorage.getItem('user') as string),
   );

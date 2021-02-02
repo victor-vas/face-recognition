@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ErrorHandling from '../../components/ErrorHandling';
 import api from '../../configs/api';
 import { IUser } from '../App';
 
@@ -11,6 +12,7 @@ const SignUp = ({ setRoute, setUser }: SignUpProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   return (
     <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -32,14 +34,16 @@ const SignUp = ({ setRoute, setUser }: SignUpProps) => {
               });
               const user = await response.json();
 
-              if (user) {
+              if (user?.id) {
                 setUser(user);
                 localStorage.setItem('user', JSON.stringify(user));
                 setRoute('home');
                 localStorage.setItem('route', 'home');
+              } else {
+                setError('Erro no registro.');
               }
             } catch (error) {
-              console.log('Erro no Registro.');
+              setError('Erro no registro.');
             }
           }}
         >
@@ -94,6 +98,7 @@ const SignUp = ({ setRoute, setUser }: SignUpProps) => {
               type="submit"
               value="Registrar"
             />
+            <ErrorHandling error={error} setError={setError} />
           </div>
         </form>
       </main>

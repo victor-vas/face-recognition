@@ -27,7 +27,7 @@
 </p>
 
 <p align="center">
-  <img alt="Face Recognition" src="https://res.cloudinary.com/dg4rnkej8/image/upload/v1612095718/portfolio/face-recognition_mawnze.png">
+  <img alt="Face Recognition" src="https://res.cloudinary.com/dg4rnkej8/image/upload/v1612296553/portfolio/image_1_chxijw.png">
 </p>
 
 <p align="center">
@@ -46,6 +46,8 @@
 - [clarifai](https://www.npmjs.com/package/clarifai)
 
 ## :information_source: How To Use
+
+Create [Backend](https://github.com/victor-vas/face-recognition-api)
 
 ```bash
 # Clone this repository
