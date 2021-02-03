@@ -7,9 +7,11 @@ interface ErrorHandlingProps {
 
 const ErrorHandling = ({ error, setError }: ErrorHandlingProps) => {
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setError('');
-    }, 5000);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
   }, [setError, error]);
 
   return (
